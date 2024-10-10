@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Ticket Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        #result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Flight Ticket Price Prediction</h1>
+        <form id="prediction-form">
+            <label for="Airline">Airline:</label>
+            <input type="text" name="Airline" required>
+
+            <label for="DepartureAirport">Departure Airport:</label>
+            <input type="text" name="DepartureAirport" required>
+
+            <label for="ArrivalAirport">Arrival Airport:</label>
+            <input type="text" name="ArrivalAirport" required>
+
+            <label for="Distance">Distance (in miles):</label>
+            <input type="number" name="Distance" required>
+
+            <label for="FlightDuration">Flight Duration (in hours):</label>
+            <input type="number" name="FlightDuration" required step="any">
+
+            <label for="Class">Class:</label>
+            <input type="text" name="Class" required>
+
+            <label for="NumberOfStops">Number of Stops:</label>
+            <input type="number" name="NumberOfStops" required>
+
+            <label for="DaysUntilDeparture">Days Until Departure:</label>
+            <input type="number" name="DaysUntilDeparture" required>
+
+            <label for="DayOfWeek">Day of Week:</label>
+            <input type="text" name="DayOfWeek" required>
+
+            <button type="submit">Predict Price</button>
+        </form>
+
+        <h2 id="result"></h2>
+    </div>
+
+    <script>
+        // Function to handle form submission
+        document.getElementById("prediction-form").onsubmit = async function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            
+            const formData = new FormData(this); // Gather form data
+
+            try {
+                // Send a POST request to the /predict endpoint
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Check if the response is OK (status code 200)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                // Parse the JSON response
+                const result = await response.json();
+                // Display the predicted price
+                document.getElementById("result").innerText = `Predicted Ticket Price: $${result.predicted_price.toFixed(2)}`;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById("result").innerText = 'An error occurred while predicting the price.';
+            }
+        };
+    </script>
+</body>
+</html>
+
