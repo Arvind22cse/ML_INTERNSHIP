@@ -4,6 +4,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import joblib
 from flask import Flask, request, jsonify, render_template
 
@@ -12,6 +13,7 @@ app = Flask(__name__)
 # Load dataset and train model
 def train_model():
     # Load dataset
+    
     data = pd.read_csv('flight_ticket_price_prediction_dataset.csv')
 
     # Separate features and target variable
@@ -43,6 +45,23 @@ def train_model():
 
     # Save the model
     joblib.dump(pipeline, 'flight_price_model_svm.pkl')
+
+    # Evaluate model performance
+    y_pred = pipeline.predict(X_test)
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = mse ** 0.5
+    mae = mean_absolute_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+
+    # Print model performance metrics to console
+    print(f"Mean Squared Error (MSE): {mse:.2f}")
+    print(f"Root Mean Squared Error (RMSE): {rmse:.2f}")
+    print(f"Mean Absolute Error (MAE): {mae:.2f}")
+    print(f"R² Score: {r2:.2f}")
+
+    # Calculate custom accuracy (±10%)
+    accuracy = 100 * (1 - (mae / y.mean()))  # assuming y.mean() is the average ticket price
+    print(f"Custom Accuracy (±10%): {accuracy:.2f}%\n")
 
 # Predict ticket price
 def predict_ticket_price(input_data):
@@ -94,6 +113,3 @@ if __name__ == "__main__":
 
     # Print the URL where the application is running
     print("Server is running on http://127.0.0.1:5000/")
-
-
-
