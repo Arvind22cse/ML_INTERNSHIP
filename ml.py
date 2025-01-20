@@ -112,4 +112,4 @@ if __name__ == "__main__":
     app.run(debug=True, port=5000)  # Start the Flask app on port 5000
 
     # Print the URL where the application is running
-    print("Server is running on http://127.0.0.1:5000/")
+    print("Server is running  http://127.0.0.1:5000/")
